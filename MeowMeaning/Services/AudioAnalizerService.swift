@@ -15,7 +15,7 @@ class AudioAnalizerService {
     private var meowMLModel: CatMeowV1? = nil
     private var catIdentifierMLModel: CatIdentifierV1? = nil
     private var catMeowObserver: AudioAnalizerObserver? = nil
-    private var catIdenfifyObserver: AudioAnalizerObserver? = nil
+    private var catIdentifyObserver: AudioAnalizerObserver? = nil
     
     // MARK: - Initializer
     init() {
@@ -23,19 +23,19 @@ class AudioAnalizerService {
         self.meowMLModel = try? CatMeowV1(configuration: mlConfig)
         self.catIdentifierMLModel = try? CatIdentifierV1(configuration: mlConfig)
         self.catMeowObserver = AudioAnalizerObserver()
-        self.catIdenfifyObserver = AudioAnalizerObserver()
+        self.catIdentifyObserver = AudioAnalizerObserver()
     }
     
     deinit {
         self.meowMLModel = nil
         self.catIdentifierMLModel = nil
         self.catMeowObserver = nil
-        self.catIdenfifyObserver = nil
+        self.catIdentifyObserver = nil
     }
     
     // MARK: - Functions
     func identifyCatSound(audioFile: URL, completion: @escaping ([String: Double]?) -> Void) {
-        guard let observer = self.catIdenfifyObserver else {
+        guard let observer = self.catIdentifyObserver else {
             completion(nil)
             return
         }

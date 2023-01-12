@@ -20,7 +20,7 @@ class AudioAnalizerObserver: NSObject, AudioAnalizerObserverProtocol {
     typealias AnalyzerResultCompletion = ([String: Double]) -> Void
     
     var completion: AnalyzerResultCompletion? = nil
-    var results: [String : Double] = [:]
+    var results: AnalyzerResult = [:]
     
     func request(_ request: SNRequest, didProduce result: SNResult) {
         guard let results = (result as? SNClassificationResult)?.classifications else {
