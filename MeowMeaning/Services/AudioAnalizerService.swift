@@ -10,70 +10,85 @@ import AVFoundation
 import SoundAnalysis
 import CoreML
 
-class AudioAnalizerService: NSObject {
+class AudioAnalizerService {
     // MARK: - Properties
-    private var model: CatMeowV1? = nil
-    private var results: [String: Double] = [:]
-    private var completion: (([String: Double]?) -> Void)? = nil
+    private var meowMLModel: CatMeowV1? = nil
+    private var catIdentifierMLModel: CatIdentifierV1? = nil
+    private var catMeowObserver: AudioAnalizerObserver? = nil
+    private var catIdenfifyObserver: AudioAnalizerObserver? = nil
     
     // MARK: - Initializer
-    override init() {
-        self.model = try? CatMeowV1(configuration: MLModelConfiguration())
+    init() {
+        let mlConfig = MLModelConfiguration()
+        self.meowMLModel = try? CatMeowV1(configuration: mlConfig)
+        self.catIdentifierMLModel = try? CatIdentifierV1(configuration: mlConfig)
+        self.catMeowObserver = AudioAnalizerObserver()
+        self.catIdenfifyObserver = AudioAnalizerObserver()
+    }
+    
+    deinit {
+        self.meowMLModel = nil
+        self.catIdentifierMLModel = nil
+        self.catMeowObserver = nil
+        self.catIdenfifyObserver = nil
     }
     
     // MARK: - Functions
-    func classifySound(audioFile: URL, completion: @escaping ([String: Double]?) -> Void){
-        self.completion = completion
-        
-        guard let mlModel = model?.model,
-              let soundRequest = try? SNClassifySoundRequest(mlModel: mlModel) else {
-            debugPrint("Error trying to initialize the SoundRequest")
-            self.completion?(nil)
+    func identifyCatSound(audioFile: URL, completion: @escaping ([String: Double]?) -> Void) {
+        guard let observer = self.catIdenfifyObserver else {
+            completion(nil)
             return
         }
-        
+                
+        guard let catIdentifierMLModel = self.catIdentifierMLModel?.model,
+              let soundRequest = try? SNClassifySoundRequest(mlModel: catIdentifierMLModel) else {
+            debugPrint("Error trying to initialize the SoundRequest")
+            completion(nil)
+            return
+        }
+                
         guard let analyzer = try? SNAudioFileAnalyzer(url: audioFile) else {
             debugPrint("Error trying to initialize the SoundAnalizer")
-            self.completion?(nil)
+            completion(nil)
             return
         }
-        
-        guard let _ = try? analyzer.add(soundRequest, withObserver: self) else {
+             
+        guard let _ = try? analyzer.add(soundRequest, withObserver: observer) else {
             debugPrint("Error trying to add the sound request observer")
-            self.completion?(nil)
+            completion(nil)
             return
         }
         
+        observer.completion = completion
+        analyzer.analyze()
+    }
+    
+    func classifyMeowFeelingSound(audioFile: URL, completion: @escaping ([String: Double]?) -> Void) {
+        guard let observer = self.catMeowObserver else {
+            completion(nil)
+            return
+        }
+        
+        guard let meowMLModel = meowMLModel?.model,
+              let soundRequest = try? SNClassifySoundRequest(mlModel: meowMLModel) else {
+            debugPrint("Error trying to initialize the SoundRequest")
+            completion(nil)
+            return
+        }
+                
+        guard let analyzer = try? SNAudioFileAnalyzer(url: audioFile) else {
+            debugPrint("Error trying to initialize the SoundAnalizer")
+            completion(nil)
+            return
+        }
+                        
+        guard let _ = try? analyzer.add(soundRequest, withObserver: observer) else {
+            debugPrint("Error trying to add the sound request observer")
+            completion(nil)
+            return
+        }
+        
+        observer.completion = completion
         analyzer.analyze()
     }
 }
-
-// MARK: - SNResultsObserving
-extension AudioAnalizerService: SNResultsObserving {
-    
-    func request(_ request: SNRequest, didProduce result: SNResult) {
-        guard let results = (result as? SNClassificationResult)?.classifications else {
-            return
-        }
-        
-        results.forEach { item in
-            self.results[item.identifier] = item.confidence
-        }
-    }
-    
-    func requestDidComplete(_ request: SNRequest) {
-        var responseData: [String: Double] = [:]
-        
-        results.sorted(by: { $0.value > $1.value })
-            .prefix(3)
-            .forEach { (key, value) in
-                responseData[key] = value
-            }
-        
-        debugPrint(responseData)
-        
-        self.completion?(responseData)
-    }
-    
-}
-

@@ -7,8 +7,6 @@
 
 import Foundation
 import SwiftUI
-import SoundAnalysis
-import CoreML
 
 @MainActor
 class ClassificationViewModel: ObservableObject {
@@ -16,6 +14,7 @@ class ClassificationViewModel: ObservableObject {
     @Published var recording: Bool = false
     @Published var allowed: Bool = false
     @Published var classification: [AnalysisResult] = []
+    @Published var recordContainsCat: Bool = false
     @Published var soundSamples: [Float] = []
     
     var numberOfSamples: Int
@@ -71,7 +70,17 @@ class ClassificationViewModel: ObservableObject {
     }
     
     func classify() async {
-        guard let result = await self.classifySound() else {
+        guard await self.identifyCatSound() else {
+            withAnimation(.default) {
+                self.recordContainsCat = false
+                self.classification = []
+            }
+            return
+        }
+        
+        self.recordContainsCat = true
+        
+        guard let result = await self.classifyMeowSound() else {
             withAnimation(.default) {
                 self.classification = []
             }
@@ -88,16 +97,40 @@ class ClassificationViewModel: ObservableObject {
             }
         }
     }
+}
+
+// MARK: - Private Functions
+extension ClassificationViewModel {
     
-    private func classifySound() async -> [String: Double]? {
+    private func identifyCatSound() async -> Bool {
         await withCheckedContinuation { continuation in
-            self.audioAnalizerService?.classifySound(audioFile: self.audioFilePath, completion: { result in
+            self.audioAnalizerService?.identifyCatSound(audioFile: self.audioFilePath, completion: { result in
+                guard let result = result,
+                      let catSound = result[CatIdentifierLabels.cat.rawValue] else {
+                    continuation.resume(returning: false)
+                    return
+                }
+                                
+                continuation.resume(returning: catSound >= 0.8)
+            })
+        }
+    }
+    
+    private func classifyMeowSound() async -> [String: Double]? {
+        await withCheckedContinuation { continuation in
+            self.audioAnalizerService?.classifyMeowFeelingSound(audioFile: self.audioFilePath, completion: { result in
                 guard let result = result else {
                     continuation.resume(returning: nil)
                     return
                 }
                 
-                continuation.resume(returning: result)
+                var formattedResult: [String: Double] = [:]
+                
+                result.forEach { (key, value) in
+                    formattedResult[key] = value * 100.0
+                }
+                
+                continuation.resume(returning: formattedResult)
             })
         }
     }

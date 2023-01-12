@@ -21,11 +21,14 @@ struct ContentView: View {
             VStack {
                 
                 Spacer()
+                            
+                ResultView(
+                    containsCatSound: viewModel.recordContainsCat,
+                    results: viewModel.classification
+                )
+                .frame(width: 300)
+                .padding()
             
-                ResultView(results: viewModel.classification)
-                    .frame(width: 300)
-                    .padding()
-                
                 Spacer()
                 
                 ZStack {
@@ -59,15 +62,16 @@ struct ContentView: View {
                     }
                     .frame(width: 200)
                     .padding()
-                    .foregroundColor(.white)
+                    .foregroundColor(.white) 
                     .background(viewModel.recording ? .red : .green)
                     .shadow(color: .red, radius: animateRecordButton ? 10 : 0, x: 0, y: 0)
                     .cornerRadius(5)
                     
                     Button("Classify") {
+                        HapticFeedbackHelper.shared.notify()
+                        
                         Task {
                             self.loading = true
-                            HapticFeedbackHelper.shared.notify()
                             await viewModel.classify()
                             self.loading = false
                         }
@@ -85,6 +89,7 @@ struct ContentView: View {
             .task {
                 await viewModel.requestPermission()
             }
+            .padding()
             
         } //: NavigationView
         

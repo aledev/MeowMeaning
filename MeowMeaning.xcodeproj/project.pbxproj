@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE36BED129704F6900AC9287 /* CatIdentifierV1.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = CE36BED029704F6900AC9287 /* CatIdentifierV1.mlmodel */; };
+		CE36BED32970734A00AC9287 /* CatIdentifierLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE36BED22970734A00AC9287 /* CatIdentifierLabels.swift */; };
+		CE36BED62970740F00AC9287 /* AudioAnalizerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE36BED52970740F00AC9287 /* AudioAnalizerObserver.swift */; };
 		CEA56117296D9567002FC766 /* MeowMeaningApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA56116296D9567002FC766 /* MeowMeaningApp.swift */; };
 		CEA56119296D9567002FC766 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA56118296D9567002FC766 /* ContentView.swift */; };
 		CEA5611B296D956A002FC766 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA5611A296D956A002FC766 /* Assets.xcassets */; };
@@ -25,6 +28,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CE36BED029704F6900AC9287 /* CatIdentifierV1.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = CatIdentifierV1.mlmodel; sourceTree = "<group>"; };
+		CE36BED22970734A00AC9287 /* CatIdentifierLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatIdentifierLabels.swift; sourceTree = "<group>"; };
+		CE36BED52970740F00AC9287 /* AudioAnalizerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAnalizerObserver.swift; sourceTree = "<group>"; };
 		CEA56113296D9567002FC766 /* MeowMeaning.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeowMeaning.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA56116296D9567002FC766 /* MeowMeaningApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeowMeaningApp.swift; sourceTree = "<group>"; };
 		CEA56118296D9567002FC766 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -54,6 +60,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE36BED4297073F100AC9287 /* Observers */ = {
+			isa = PBXGroup;
+			children = (
+				CE36BED52970740F00AC9287 /* AudioAnalizerObserver.swift */,
+			);
+			path = Observers;
+			sourceTree = "<group>";
+		};
 		CEA5610A296D9566002FC766 = {
 			isa = PBXGroup;
 			children = (
@@ -125,6 +139,7 @@
 		CED4DB1D296F4994004EBF0E /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				CE36BED4297073F100AC9287 /* Observers */,
 				CED4DB21296F49CE004EBF0E /* MLModels */,
 				CED4DB1F296F49AF004EBF0E /* AudioAnalizerService.swift */,
 			);
@@ -142,6 +157,7 @@
 		CED4DB21296F49CE004EBF0E /* MLModels */ = {
 			isa = PBXGroup;
 			children = (
+				CE36BED029704F6900AC9287 /* CatIdentifierV1.mlmodel */,
 				CED4DB22296F49E2004EBF0E /* CatMeowV1.mlmodel */,
 			);
 			path = MLModels;
@@ -152,6 +168,7 @@
 			children = (
 				CED4DB2D296F631D004EBF0E /* CatFeeling.swift */,
 				CED4DB2F296F633D004EBF0E /* AnalysisResult.swift */,
+				CE36BED22970734A00AC9287 /* CatIdentifierLabels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -232,11 +249,14 @@
 				CED4DB1C296F46FC004EBF0E /* AudioRecorderHelper.swift in Sources */,
 				CED4DB29296F6257004EBF0E /* HapticFeedbackHelper.swift in Sources */,
 				CED4DB2E296F631D004EBF0E /* CatFeeling.swift in Sources */,
+				CE36BED62970740F00AC9287 /* AudioAnalizerObserver.swift in Sources */,
 				CED4DB14296F45C4004EBF0E /* BarView.swift in Sources */,
 				CEA56119296D9567002FC766 /* ContentView.swift in Sources */,
+				CE36BED32970734A00AC9287 /* CatIdentifierLabels.swift in Sources */,
 				CEA56117296D9567002FC766 /* MeowMeaningApp.swift in Sources */,
 				CED4DB30296F633D004EBF0E /* AnalysisResult.swift in Sources */,
 				CED4DB19296F4643004EBF0E /* LoadingView.swift in Sources */,
+				CE36BED129704F6900AC9287 /* CatIdentifierV1.mlmodel in Sources */,
 				CED4DB20296F49AF004EBF0E /* AudioAnalizerService.swift in Sources */,
 				CED4DB17296F45E5004EBF0E /* FrequencyView.swift in Sources */,
 			);
